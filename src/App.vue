@@ -1,60 +1,41 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
-  </div>
+  <el-container>
+    <el-header><Header></Header></el-header>
+    <el-main><Home></Home></el-main>
+    <el-footer><Footer></Footer></el-footer>
+  </el-container>
 </template>
-
 <script>
+import Header from "./components/common/Header";
+import Footer from "./components/common/Footer";
+import Home from './components/pages/Home'
 export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  }
-}
+  components: { Header,Footer,Home }
+};
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  width: 100%;
+  height: auto;
 }
-
-h1, h2 {
-  font-weight: normal;
+.el-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
-
-ul {
-  list-style-type: none;
-  padding: 0;
+.el-header,.el-footer,.el-main{
+  width: 100%;
+  height: auto !important;
+  padding: 0
 }
-
-li {
-  display: inline-block;
-  margin: 0 10px;
+.el-main{
+  padding-top: 80px;
 }
-
-a {
-  color: #42b983;
+.el-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid #ccc;
 }
 </style>
