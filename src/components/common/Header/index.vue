@@ -62,7 +62,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .nav {
-  z-index: 1;
   margin: 0 auto;
   height: 80px;
   width: 1200px;

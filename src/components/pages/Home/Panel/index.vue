@@ -26,11 +26,6 @@ export default {
     //       m_pictrue:
     //         "../../../../../static/img/movies/复仇者联盟4：终局之战.jpg"
     //     },
-    //     {
-    //       m_name: "复仇者联盟",
-    //       m_pictrue:
-    //         "../../../../../static/img/movies/复仇者联盟4：终局之战.jpg"
-    //     }
     //   ]
     };
   },
@@ -69,7 +64,6 @@ export default {
       width: 160px;
       height: 260px;
       .movie-item {
-        z-index: -1;
         position: relative;
         img {
           width: 160px;

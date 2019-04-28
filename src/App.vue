@@ -30,9 +30,10 @@ body {
   padding: 0
 }
 .el-main{
-  padding-top: 80px;
+  padding-top: 100px;
 }
 .el-header{
+   z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;

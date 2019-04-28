@@ -1,5 +1,8 @@
 <template>
-  <div class="main"><Panel :movies="movies"></Panel></div>
+  <div class="main">
+    <Banner></Banner>
+    <Panel :movies="movies"></Panel>
+  </div>
 </template>
 <script>
 import Panel from "./Panel";
