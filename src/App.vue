@@ -1,16 +1,15 @@
 <template>
   <el-container>
     <el-header><Header></Header></el-header>
-    <el-main><Home></Home></el-main>
+    <el-main><router-view></router-view></el-main>
     <el-footer><Footer></Footer></el-footer>
   </el-container>
 </template>
 <script>
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
-import Home from './components/pages/Home'
 export default {
-  components: { Header,Footer,Home }
+  components: { Header,Footer }
 };
 </script>
 
@@ -30,10 +29,11 @@ body {
   padding: 0
 }
 .el-main{
-  padding-top: 100px;
+  padding-top: 81px;
 }
 .el-header{
-   z-index: 1000;
+  background: white;
+  z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;

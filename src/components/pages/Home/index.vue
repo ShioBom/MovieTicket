@@ -30,6 +30,7 @@ export default {
   margin: 0 auto;
   height: auto;
   width: 1200px;
+  padding-top: 20px;
 }
 </style>
 

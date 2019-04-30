@@ -4,7 +4,7 @@
       <h3>{{ title }}</h3>
     </div>
     <ul>
-      <li v-for="(item, ind) in movies" :key="ind">
+      <li v-for="item in movies" :key="item.m_id" @click="goDetail(item.m_id)">
         <div class="movie-item">
           <img :src="item.m_picture" alt="图片找不到了" />
           <span class="movie-name">{{ item.m_name }}</span>
@@ -20,20 +20,15 @@ export default {
   data() {
     return {
       title: "正在热映",
-    //   movies: [
-    //     {
-    //       m_name: "复仇者联盟",
-    //       m_pictrue:
-    //         "../../../../../static/img/movies/复仇者联盟4：终局之战.jpg"
-    //     },
-    //   ]
     };
   },
   methods: {
-    
+    goDetail(id){
+   console.log(this.movies);
+      this.$router.push("/Detail/"+id);
+    }
   },
   mounted() {
-   console.log(this.movies);
   },
 };
 </script>

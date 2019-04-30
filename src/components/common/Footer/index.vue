@@ -15,7 +15,7 @@ export default {
 .bottom{
     margin: 0 auto;
     height: 212px;
-    width:1200px;
+    width:100%;
     background: #262426;
     padding: 56px 0;
     margin: 0 auto;
