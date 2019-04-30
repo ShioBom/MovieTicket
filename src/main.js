@@ -5,6 +5,7 @@ import router from './router/index.js'
 import "./assets/css/reset.css"
 // import {Container,Rate} from 'element-ui';
 import ElementUI from "element-ui";
+import './assets/css/jquery.seat-charts.css'
 import "element-ui/lib/theme-chalk/index.css";
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;

@@ -6,6 +6,7 @@ import VueRouter from "vue-router";
 import Home from '../components/pages/Home';
 import MovieDetail from "../components/pages/MovieDetail";
 import Cinemas from "../components/pages/Cinemas";
+import SelectSeats from "../components/pages/SelectSeats";
 //注册
 
 Vue.use(VueRouter);
@@ -14,6 +15,7 @@ Vue.use(VueRouter);
 const routes = [
   { path: "/Detail/:id", component: MovieDetail },
   { path: "/Cinemas", name: "Cinemas", component: Cinemas },
+  { path: "/SelectSeats", name: "SelectSeats", component: SelectSeats },
   { path: "/", component: Home }
 ];
 const router = new VueRouter({

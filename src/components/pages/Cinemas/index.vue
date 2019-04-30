@@ -1,17 +1,27 @@
 <template>
   <div class="chamber">
     <div class="movie_info">
-      <h3>{{movie.m_name}}</h3>
+      <h3>{{ movie.m_name }}</h3>
       <div class="movie-desc">
-        <div><span class="key">时长</span><span class="value">{{movie.m_length}}</span></div>
-        <div><span class="key">类型</span><span class="value">{{movie.m_type}}</span></div>
+        <div>
+          <span class="key">时长</span
+          ><span class="value">{{ movie.m_length }}</span>
+        </div>
+        <div>
+          <span class="key">类型</span
+          ><span class="value">{{ movie.m_type }}</span>
+        </div>
       </div>
     </div>
     <div class="show_date">
       <span>观影时间</span>
-      <span class="date-item active" v-for="(date, ind) in dates" :key="ind" @click="toggle(ind)">{{
-        date
-      }}</span>
+      <span
+        class="date-item active"
+        v-for="(date, ind) in dates"
+        :key="ind"
+        @click="toggle(ind)"
+        >{{ date }}</span
+      >
     </div>
     <div class="chamber_container active">
       <table>
@@ -25,13 +35,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item,ind) in chambers[status]" :key="ind">
+          <tr v-for="(item, ind) in chambers[status]" :key="ind">
             <td>{{ getTimeStr(item.ch_time) }}</td>
             <td>{{ item.ch_lang }}</td>
             <td>{{ item.name }}</td>
             <td>{{ price }}</td>
             <td>
-              <el-button type="danger" size="medium" round>选座购票</el-button>
+              <el-button type="danger" size="medium" round @click="selectSeat(item)">选座购票</el-button>
             </td>
           </tr>
         </tbody>
@@ -50,10 +60,9 @@ export default {
       month: 0,
       price: "",
       dates: [],
-      status:1
+      status: 1
     };
   },
-  computed: {},
 
   methods: {
     requsetMovie(id) {
@@ -115,15 +124,30 @@ export default {
       let DD = date.getDate();
       return `${MM}月${DD}日`;
     },
-    toggle(ind){
-      this.status=ind;
+    //切换日期
+    toggle(ind) {
+      this.status = ind;
+    },
+    //跳转到选座页面
+    selectSeat(item){
+      console.log(item);
+      this.$router.push({
+        path:"/SelectSeats",
+        name:"SelectSeats",
+        query:{
+          m_id:Number(this.$route.query.m_id),
+          price:this.price,
+          c_id:Number(this.$route.query.c_id),
+          chamber_id:item.id
+        }
+      });
     }
   },
   mounted() {
     //准备参数
-    let m_id = Number(this.$route.query.m_id);
-    let c_id = Number(this.$route.query.c_id);
-    let price = Number(this.$route.query.price);
+    let m_id = Number(this.$route.query.m_id);//电影id
+    let c_id = Number(this.$route.query.c_id);//影院id
+    let price = Number(this.$route.query.price);//该影院该电影售价
     this.price = price;
     //请求电影数据
     this.requsetMovie(m_id);
@@ -139,29 +163,29 @@ export default {
   width: 1200px;
   margin: 0 auto;
 }
-.movie_info{
-      margin-top: 20px;
-    border-bottom: 1px solid #e5e5e5;
-    h3{
-          display: inline-block;
+.movie_info {
+  margin-top: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  h3 {
+    display: inline-block;
     margin: 0 20px 20px 0;
     font-size: 26px;
     font-weight: 400;
     color: #333;
-    }
-    .movie-desc>div{
-          display: inline-block;
+  }
+  .movie-desc > div {
+    display: inline-block;
     font-size: 14px;
     color: #151515;
     margin-bottom: 20px;
     margin-right: 40px;
-    .key{
+    .key {
       color: #999;
     }
-    .value{
+    .value {
       color: #151515;
     }
-    }
+  }
 }
 table {
   width: 100%;

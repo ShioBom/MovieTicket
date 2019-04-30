@@ -14,7 +14,9 @@ export default {
       movies: []
     };
   },
-  
+  methods: {
+    
+  },
   mounted() {
     this.$axios({
       method: "get",

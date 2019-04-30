@@ -55,8 +55,11 @@ export default {
           this[name] = value;
         }
       }
-      return parseInt(this.flag);
+      return parseInt(this.u_id);
     }
+  },
+  mounted() {
+    console.log(this.loginStatus);
   },
 };
 </script>

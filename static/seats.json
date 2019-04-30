@@ -1,0 +1,45 @@
+{
+  "cinemas": [
+    {
+      "c_id": 1,
+      "chambers": [
+        {
+          "id": 1,
+          "name": "一号厅",
+          "map": [
+            "cccccccccccc",
+            "cccccccccccc",
+            "cccccccccc__",
+            "cccccccccc__",
+            "cccccccccccc",
+            "cccccccccccc",
+            "cccccccccccc"
+          ],
+          "selectSeatsID": [
+            "1_2",
+            "3_8",
+            "3_7"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "二号厅",
+          "map": [
+            "cccccccccccc",
+            "cccccccccccc",
+            "cccccccccccc",
+            "____________",
+            "cccccccccccc",
+            "cccccccccccc",
+            "cccccccccccc"
+          ],
+          "selectSeatsID": [
+            "1_2",
+            "7_8"
+          ]
+        }
+      ]
+    },
+    {}
+  ]
+}
