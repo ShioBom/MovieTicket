@@ -24,9 +24,8 @@
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-if="!loginStatus">登录</el-dropdown-item>
-        <el-dropdown-item v-if="loginStatus">我的订单</el-dropdown-item>
-        <el-dropdown-item divided v-if="loginStatus">退出登录</el-dropdown-item>
+        <el-dropdown-item v-if="!loginStatus" ><span @click="login()">登录</span></el-dropdown-item>
+        <el-dropdown-item divided v-if="loginStatus"><span  @click="exit()" >退出登录</span></el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -56,9 +55,17 @@ export default {
         }
       }
       return parseInt(this.u_id);
+    },
+    login(){
+      location.href="http://localhost:3002/admin/login";
+    },
+    exit(){
+      sessionStorage.removeItem("userInfo");
+      location.href="http://localhost:8080";
     }
   },
   mounted() {
+    console.log(this)
     console.log(this.loginStatus);
   },
 };

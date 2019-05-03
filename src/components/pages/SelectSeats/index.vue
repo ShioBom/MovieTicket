@@ -53,12 +53,11 @@ export default {
     return {
       movie: { price: 50 },
       selectSeats: [],
-      selectSeatsID: [],
       status: false,
       map: [],
       price: "",
       chamber: {},
-      cinema:{}
+      cinema: {}
     };
   },
   computed: {
@@ -67,22 +66,20 @@ export default {
     }
   },
   methods: {
-    getSeatsMap(c_id, id) {
-      this.$axios.get("/static/seats.json").then(res => {
+     getSeatsMap(c_id, id) {
+       this.$axios.get("/static/seats.json").then(res => {
         this.map = res.data.cinemas[c_id - 1].chambers[id - 1].map;
-        this.selectSeatsID =
-          res.data.cinemas[c_id - 1].chambers[id - 1].selectSeatsID;
       });
     },
-    requsetMovie(id) {
-      this.$axios
+     requsetMovie(id) {
+       this.$axios
         .post("http://localhost:3002/client/getCinemaMovie", { id })
         .then(res => {
           this.movie = res.data.result[0];
         });
     },
-    requsetChambers(m_id, c_id) {
-      this.$axios
+     requsetChambers(m_id, c_id) {
+       this.$axios
         .post("http://localhost:3002/client/getChambers", {
           m_id,
           c_id
@@ -95,42 +92,83 @@ export default {
           });
         });
     },
-    requestCinema(c_id){
-      this.$axios.post("http://localhost:3002/client/getCinema",{c_id}).then(res=>{
-        console.log(res.data.result);
-        this.cinema = res.data.result[0];
-      })
+     requestCinema(c_id) {
+       this.$axios
+        .post("http://localhost:3002/client/getCinema", { c_id })
+        .then(res => {
+          this.cinema = res.data.result[0];
+        });
     },
-    getTimeStr(){
+    getTimeStr() {
       let date = new Date(this.chamber.ch_time);
       let HH = date.getHours();
       let mm = date.getMinutes();
-      let MM= date.getMonth()+1;
+      let MM = date.getMonth() + 1;
       let DD = date.getDate();
       if (MM < 10) {
         return `${MM}月${DD}日  ${HH}:0${mm}`;
       }
       return `${MM}月${DD}日  ${HH}:0${mm}`;
     },
-    createOrder(){
-      let u_id = JSON.parse(sessionStorage.getItem("userInfo")).u_id;
-      console.log(this.cinema.c_name);
-      let data={
-        u_id,
-        m_name:this.movie.m_name,
-        time:this.getTimeStr(this.chamber.ch_time),
-        chamber:this.chamber.name,
-        cinema:this.cinema.c_cinema,
-        seats:this.selectSeats,
-        price:this.price,
-      }
-      this.$axios({
-        method:"post",
-        url:"http://localhost:3002/client/insertOrder",
-        data:data
-      })
+     queryBoughtSeats(sc) {
+      console.log(this.getTimeStr());
+      let data = {
+        m_name: this.movie.m_name,
+        time: this.getTimeStr(),
+        chamber: this.chamber.name,
+        cinema: this.cinema.c_cinema
+      };
       console.log(data);
-    }
+       this.$axios({
+        method: "post",
+        url: "http://localhost:3002/client/seatIsBought",
+        data: data
+      }).then(res => {
+        if (res.status === 200) {
+          let result = res.data.result;
+          let arr = [];
+          result.forEach(ele => {
+            //给座位转格式 3排3座 -> 3_3
+            let seat = ele.seat.replace(/[\u4e00-\u9fa5]/g, "_").slice(0, -1);
+            arr.push(seat);
+          });
+          //禁用被购买的座位
+           sc.get(arr).status("unavailable");
+        }
+      });
+    },
+     createOrder() {
+      let u_id = JSON.parse(sessionStorage.getItem("userInfo")).u_id;
+      let data = {
+        u_id,
+        m_name: this.movie.m_name,
+        time: this.getTimeStr(this.chamber.ch_time),
+        chamber: this.chamber.name,
+        cinema: this.cinema.c_cinema,
+        seats: this.selectSeats,
+        price: this.price
+      };
+      this.$axios({
+        method: "post",
+        url: "http://localhost:3002/client/insertOrder",
+        data: data
+      }).then(res => {
+        console.log("res", res);
+        if (res.status === 200) {
+          console.log("111");
+          this.$router.push({
+            name: "Cart",
+            path: "/Cart",
+            query: {
+              u_id,
+              chamber: data.chamber,
+              cinema: data.cinema,
+              m_name: data.m_name
+            }
+          });
+        }
+      });
+    },
   },
   created() {
     let m_id = Number(this.$route.query.m_id); //电影id
@@ -139,13 +177,14 @@ export default {
     let price = Number(this.$route.query.price); //该影院该电影售价
     this.price = price;
     //获取座位布局
-    this.getSeatsMap(c_id, chamber_id);
-    //请求电影数据
-    this.requsetMovie(m_id);
-    //请求相关影厅数据
-    this.requsetChambers(m_id, c_id);
-    //获取影院信息
-    this.requestCinema(c_id);
+      this.getSeatsMap(c_id, chamber_id);
+      //请求电影数据
+      this.requsetMovie(m_id);
+      //请求相关影厅数据
+      this.requsetChambers(m_id, c_id);
+      //获取影院信息
+      this.requestCinema(c_id);
+     
   },
   mounted() {
     let self = this;
@@ -160,7 +199,7 @@ export default {
             }座`;
             //将选中座位添加入选中座位数组中，
             self.selectSeats.push(seat);
-            self.selectSeatsID.push(this.settings.id);
+            // self.selectSeatsID.push(this.settings.id);
             return "selected";
           } else if (this.status() == "selected") {
             let seat = `${this.settings.id.split("_")[0]}排${
@@ -174,15 +213,15 @@ export default {
             }
             return "available";
           } else if (this.status() == "unavailable") {
-            //seat has been already booked
             return "unavailable";
           } else {
             return this.style();
           }
         }
       });
-      sc.get(this.selectSeatsID).status("unavailable");
-    },500);
+       //获取已被购买的座位信息
+      this.queryBoughtSeats(sc);
+    }, 500);
   }
 };
 </script>
