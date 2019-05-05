@@ -5,17 +5,13 @@
       <span>胖达电影</span>
     </a>
     <ul>
-      <li class="active"><a href="">首页</a></li>
-      <li><a href="">电影</a></li>
-      <li><a href="">影院</a></li>
-      <li><a href="">榜单</a></li>
-      <li><a href="">热点</a></li>
-      <li><a href="">商城</a></li>
+      <li class="active" @click="goIndex()">首页</li>
+     
     </ul>
-    <form action="">
-      <input type="text" placeholder="搜索电影" />
-      <input type="submit" />
-    </form>
+    <div class="form">
+      <input type="text" v-model="txt" @keyup.enter="search()" placeholder="搜索电影" />
+      <input type="submit" @click="search()" />
+    </div>
     <el-dropdown>
       <span class="el-dropdown-link">
         <div class="portrait">
@@ -34,7 +30,8 @@
 export default {
   data() {
     return {
-      loginStatus: this.UrlSearch()
+      loginStatus: this.UrlSearch(),
+      txt:"",
     };
   },
   //获取url地址栏的参数
@@ -62,6 +59,17 @@ export default {
     exit(){
       sessionStorage.removeItem("userInfo");
       location.href="http://localhost:8080";
+    },
+    search(){
+      this.$router.push(`/Search/${this.txt}`);
+    },
+    goIndex(){
+      let u_id = JSON.parse(sessionStorage.getItem("userInfo")).id;
+      if(u_id!==undefined){
+       location.href = `http://localhost:8080/?u_id=${u_id}`;
+      }else{
+       location.href = `http://localhost:8080`;
+      }
     }
   },
   mounted() {
@@ -98,24 +106,18 @@ export default {
       text-align: center;
       width: 70px;
       height: 100%;
-      a {
-    color: #333;
-
-        width: 100%;
-        display: block;
-      }
+      line-height: 80px;
     }
     li.active {
       background: #ef4238;
-      a {
         color: white;
-      }
     }
-    li:hover a {
+    li:hover{
       color: #ef4238;
+      background:rgb(201, 127, 127);
     }
   }
-  form {
+  .form {
     float: left;
     margin-top: 20px;
     display: block;

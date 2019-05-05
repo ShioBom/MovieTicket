@@ -57,6 +57,7 @@ export default {
       map: [],
       price: "",
       chamber: {},
+      chambers: [],
       cinema: {}
     };
   },
@@ -66,34 +67,36 @@ export default {
     }
   },
   methods: {
-     getSeatsMap(c_id, id) {
-       this.$axios.get("/static/seats.json").then(res => {
+    getSeatsMap(c_id, id) {
+      this.$axios.get("/static/seats.json").then(res => {
         this.map = res.data.cinemas[c_id - 1].chambers[id - 1].map;
       });
     },
-     requsetMovie(id) {
-       this.$axios
+    requsetMovie(id) {
+      this.$axios
         .post("http://localhost:3002/client/getCinemaMovie", { id })
         .then(res => {
           this.movie = res.data.result[0];
         });
     },
-     requsetChambers(m_id, c_id) {
-       this.$axios
+    requsetChambers(m_id, c_id) {
+      this.$axios
         .post("http://localhost:3002/client/getChambers", {
           m_id,
           c_id
         })
         .then(res => {
+          this.chambers = res.data.result;
+          console.log(this.chambers);
           res.data.result.forEach(item => {
-            if (item.id === Number(this.$route.query.chamber_id)) {
+            if (item.chamber_id === Number(this.$route.query.chamber_id)) {
               this.chamber = item;
             }
           });
         });
     },
-     requestCinema(c_id) {
-       this.$axios
+    requestCinema(c_id) {
+      this.$axios
         .post("http://localhost:3002/client/getCinema", { c_id })
         .then(res => {
           this.cinema = res.data.result[0];
@@ -110,7 +113,7 @@ export default {
       }
       return `${MM}月${DD}日  ${HH}:0${mm}`;
     },
-     queryBoughtSeats(sc) {
+    queryBoughtSeats(sc) {
       console.log(this.getTimeStr());
       let data = {
         m_name: this.movie.m_name,
@@ -119,7 +122,7 @@ export default {
         cinema: this.cinema.c_cinema
       };
       console.log(data);
-       this.$axios({
+      this.$axios({
         method: "post",
         url: "http://localhost:3002/client/seatIsBought",
         data: data
@@ -133,43 +136,52 @@ export default {
             arr.push(seat);
           });
           //禁用被购买的座位
-           sc.get(arr).status("unavailable");
+          sc.get(arr).status("unavailable");
         }
       });
     },
-     createOrder() {
+    createOrder() {
       let u_id = JSON.parse(sessionStorage.getItem("userInfo")).u_id;
-      let data = {
-        u_id,
-        m_name: this.movie.m_name,
-        time: this.getTimeStr(this.chamber.ch_time),
-        chamber: this.chamber.name,
-        cinema: this.cinema.c_cinema,
-        seats: this.selectSeats,
-        price: this.price
-      };
-      this.$axios({
-        method: "post",
-        url: "http://localhost:3002/client/insertOrder",
-        data: data
-      }).then(res => {
-        console.log("res", res);
-        if (res.status === 200) {
-          console.log("111");
-          this.$router.push({
-            name: "Cart",
-            path: "/Cart",
-            query: {
-              u_id,
-              chamber: data.chamber,
-              cinema: data.cinema,
-              m_name: data.m_name
-            }
-          });
-        }
-      });
+      if (u_id !== null) {
+        let data = {
+          u_id,
+          m_name: this.movie.m_name,
+          time: this.getTimeStr(this.chamber.ch_time),
+          chamber: this.chamber.name,
+          cinema: this.cinema.c_cinema,
+          seats: this.selectSeats,
+          price: this.price
+        };
+        this.$axios({
+          method: "post",
+          url: "http://localhost:3002/client/insertOrder",
+          data: data
+        }).then(res => {
+          console.log("res", res);
+          if (res.status === 200) {
+            console.log("111");
+            this.$router.push({
+              name: "Cart",
+              path: "/Cart",
+              query: {
+                u_id,
+                chamber: data.chamber,
+                cinema: data.cinema,
+                m_name: data.m_name
+              }
+            });
+          }
+        });
+      } else {
+        this.open();
+      }
     },
+    //消息提示
+    open() {
+      this.$message("你还没有登录，不能购买电影票");
+    }
   },
+
   created() {
     let m_id = Number(this.$route.query.m_id); //电影id
     let c_id = Number(this.$route.query.c_id); //影院id
@@ -177,14 +189,13 @@ export default {
     let price = Number(this.$route.query.price); //该影院该电影售价
     this.price = price;
     //获取座位布局
-      this.getSeatsMap(c_id, chamber_id);
-      //请求电影数据
-      this.requsetMovie(m_id);
-      //请求相关影厅数据
-      this.requsetChambers(m_id, c_id);
-      //获取影院信息
-      this.requestCinema(c_id);
-     
+    this.getSeatsMap(c_id, chamber_id);
+    //请求电影数据
+    this.requsetMovie(m_id);
+    //请求相关影厅数据
+    this.requsetChambers(m_id, c_id);
+    //获取影院信息
+    this.requestCinema(c_id);
   },
   mounted() {
     let self = this;
@@ -209,7 +220,6 @@ export default {
             if (ind !== -1) {
               //从选中座位中移除选中座位
               self.selectSeats.splice(ind, 1);
-              self.selectSeatsID.splice(ind, 1);
             }
             return "available";
           } else if (this.status() == "unavailable") {
@@ -219,7 +229,7 @@ export default {
           }
         }
       });
-       //获取已被购买的座位信息
+      //获取已被购买的座位信息
       this.queryBoughtSeats(sc);
     }, 500);
   }

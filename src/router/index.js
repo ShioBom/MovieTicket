@@ -8,6 +8,8 @@ import MovieDetail from "../components/pages/MovieDetail";
 import Cinemas from "../components/pages/Cinemas";
 import SelectSeats from "../components/pages/SelectSeats";
 import Cart from '../components/pages/Cart'
+import Search from '../components/pages/Search'
+
 //注册
 
 Vue.use(VueRouter);
@@ -18,6 +20,7 @@ const routes = [
   { path: "/Cinemas", name: "Cinemas", component: Cinemas },
   { path: "/SelectSeats", name: "SelectSeats", component: SelectSeats },
   { path: "/Cart", name: "Cart", component: Cart },
+  { path: "/Search/:str", name: "Search", component: Search },
   { path: "/", component: Home }
 ];
 const router = new VueRouter({

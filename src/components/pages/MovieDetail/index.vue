@@ -17,7 +17,20 @@
           <div class="movie_button">
             <button @click="toggle">特惠购票</button>
           </div>
-          <div class="movie_status"></div>
+          <div class="movie_status">
+            <p>用户评分</p>
+            <div class="score">
+              <el-rate
+                v-model="totalScore"
+                disabled
+                show-score
+                text-color="#ff9900"
+                score-template="{value}"
+              >
+              </el-rate>
+              <span>共计{{ scorePersonNum }}人评分</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -47,7 +60,26 @@
           <h2>
             热门短评
           </h2>
-          <span>写短评</span>
+          <span @click="dialogVisible = true">写短评</span>
+          <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="60%"
+            :before-close="handleClose"
+          >
+            <em>请点击星星评分:</em>
+            <el-rate
+              v-model="grade"
+              text-color="#ff9900"
+              allow-half
+              show-score
+            ></el-rate>
+            <el-divider></el-divider>
+            <el-input placeholder="请输入评论" v-model="review"></el-input>
+            <el-divider></el-divider>
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addReview()">确 定</el-button>
+          </el-dialog>
           <ul class="review">
             <li v-for="(review, ind) in reviews" :key="ind">
               <div class="left">
@@ -58,10 +90,11 @@
               <div class="right">
                 <div class="title">
                   <div class="user">{{ review.u_name }}</div>
-                  <i>{{ review.r_date }}</i
-                  ><el-rate
-                    v-model="value"
+                  <i>{{ review.r_date }}</i>
+                  <el-rate
+                    v-model="review.r_grade"
                     disabled
+                    show-score
                     text-color="#ff9900"
                   ></el-rate>
                 </div>
@@ -82,7 +115,11 @@
                 <h3>{{ cinema.c_cinema }}</h3>
                 <p>{{ cinema.c_address }}</p>
               </div>
-              <button @click="selectChamber(cinema.c_id,movie.m_id,cinema.price)">选座购票</button>
+              <button
+                @click="selectChamber(cinema.c_id, movie.m_id, cinema.price)"
+              >
+                选座购票
+              </button>
               <div class="price">
                 <span>¥{{ cinema.price }}</span> 起
               </div>
@@ -101,8 +138,13 @@ export default {
       activeName: "first",
       actors: [],
       reviews: [],
-      value: 2,
-      cinemas: []
+      cinemas: [],
+      dialogVisible: false,
+      review: "",
+      value: 4.5,
+      grade: null, //用户给与的评分,
+      totalScore: 0,
+      scorePersonNum: 0
     };
   },
   methods: {
@@ -111,16 +153,44 @@ export default {
       this.activeName = "fifth";
       this.selectCinema();
     },
+    //发表评论
+    addReview() {
+      this.dialogVisible = false;
+      console.log(this.review, this.grade);
+      let data = {
+        r_content: this.review,
+        u_id: JSON.parse(sessionStorage.getItem("userInfo")).u_id,
+        m_id: this.$route.params.id,
+        r_grade: this.grade
+      };
+      this.$axios
+        .post("http://localhost:3002/client/addReview", data)
+        .then(res => {
+          if (res.data.status === 200) {
+            console.log("评论发布成功");
+          }
+        });
+      this.review = "";
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
     //第一个参数是影院id，第二个参数是电影id
-    selectChamber(c_id,m_id,price) {
-      console.log(c_id,m_id);
+    selectChamber(c_id, m_id, price) {
+      console.log(c_id, m_id);
       this.$router.push({
-        name:"Cinemas",
-        path:"/Cinema",
-        query:{
-          c_id,m_id,price
+        name: "Cinemas",
+        path: "/Cinema",
+        query: {
+          c_id,
+          m_id,
+          price
         }
-      })
+      });
     },
     handleClick(tab, event) {
       if (tab.label === "演员") {
@@ -149,11 +219,25 @@ export default {
         data: { m_id: this.$route.params.id }
       }).then(res => {
         this.reviews = res.data.result;
+        console.log(this.reviews);
         //将时间戳转化为日期显示
         res.data.result.forEach(ele => {
           let date = new Date(ele.r_date);
           ele.r_date = date.getMonth() + 1 + "月" + date.getDate() + "日";
         });
+      });
+    },
+    //获取评分人数和总评分
+    getScore() {
+      this.$axios({
+        method: "post",
+        url: "http://localhost:3002/client/getAvgGrade",
+        data: { m_id: this.$route.params.id }
+      }).then(res => {
+        if (res.data.code === 1) {
+          this.scorePersonNum = res.data.result.userNum
+          this.totalScore =Math.floor( res.data.result.avgGrade * 100) / 100;
+        }
       });
     },
     //获取该电影的影院列表
@@ -178,6 +262,7 @@ export default {
         this.movie.m_picture = res.data.result[0]["m_picture"].substr(3);
       }
     });
+    this.getScore();
   }
 };
 </script>
@@ -213,6 +298,20 @@ export default {
         float: right;
         top: 70px;
         color: white;
+        .movie_status {
+          p {
+            font-size: 12px;
+            margin-bottom: 8px;
+          }
+          span {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+          }
+          position: absolute;
+          top: 158px;
+          left: 342px;
+        }
         h2 {
           font-size: 28px;
           font-weight: bold;
@@ -262,6 +361,7 @@ export default {
       border-radius: 15px;
       border: salmon 1px solid;
       color: salmon;
+      cursor: pointer;
     }
     h2::before {
       float: left;

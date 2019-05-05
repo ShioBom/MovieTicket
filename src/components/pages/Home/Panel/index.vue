@@ -16,10 +16,10 @@
 </template>
 <script>
 export default {
-    props:["movies"],
+    props:["movies","title"],
   data() {
     return {
-      title: "正在热映",
+    
     };
   },
   methods: {

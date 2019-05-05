@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <Banner></Banner>
-    <Panel :movies="movies"></Panel>
+    <Panel :movies="movies" :title="'正在热映'"></Panel>
   </div>
 </template>
 <script>
@@ -11,7 +11,7 @@ export default {
   components: { Panel, Banner },
   data() {
     return {
-      movies: []
+      movies: [],
     };
   },
   methods: {

@@ -19,7 +19,7 @@
         class="date-item active"
         v-for="(date, ind) in dates"
         :key="ind"
-        @click="toggle(ind)"
+        @click="toggle(ind,$event)"
         >{{ date }}</span
       >
     </div>
@@ -60,7 +60,7 @@ export default {
       month: 0,
       price: "",
       dates: [],
-      status: 1
+      status: 0
     };
   },
 
@@ -125,7 +125,7 @@ export default {
       return `${MM}月${DD}日`;
     },
     //切换日期
-    toggle(ind) {
+    toggle(ind,e) {
       this.status = ind;
     },
     //跳转到选座页面
@@ -138,7 +138,7 @@ export default {
           m_id:Number(this.$route.query.m_id),
           price:this.price,
           c_id:Number(this.$route.query.c_id),
-          chamber_id:item.id
+          chamber_id:item.chamber_id
         }
       });
     }
@@ -227,6 +227,7 @@ table {
   span.active {
     color: #fff;
     background-color: #f03d37;
+    cursor: pointer;
   }
 }
 </style>
