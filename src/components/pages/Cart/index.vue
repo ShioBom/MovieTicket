@@ -81,7 +81,7 @@ export default {
     //取消订单
     cancelOrder(){
         this.$axios.post("http://localhost:3002/client/cancelOrderByUser",this.data).then(res=>{
-             if (res.status === 200) {
+             if (res.data.status === 1) {
             console.log(res.data.msg);
             this.orders=[];
           }
@@ -90,9 +90,10 @@ export default {
     //结算该订单
     checkout() {
        this.$axios.post("http://localhost:3002/client/checkoutByUser",this.data).then(res=>{
-             if (res.status === 200) {
+             if (res.data.status === 1) {
             console.log(res.data.msg);
             this.orders=[];
+            this.$router.push("/PrintTicket");
           }
         })
     }

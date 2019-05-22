@@ -1,15 +1,25 @@
 <template>
   <el-container>
-    <el-header><Header></Header></el-header>
+    <el-header v-if="flag"><Header></Header></el-header>
     <el-main><router-view></router-view></el-main>
-    <el-footer><Footer></Footer></el-footer>
+    <el-footer v-if="flag"><Footer></Footer></el-footer>
   </el-container>
 </template>
 <script>
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 export default {
-  components: { Header,Footer }
+  data(){
+    return {
+      flag:true
+    }
+  },
+  components: { Header,Footer },
+  mounted() {
+    if(this.$route.name==="MovieManage"){
+      this.flag = false;
+    }
+  },
 };
 </script>
 

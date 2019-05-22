@@ -1,6 +1,6 @@
 <template>
   <div class="searchPage">
-    <Panel :movies="movies" :title="'搜索结果'"></Panel>
+    <Panel :movies="movies" :title="'搜索结果'" :buttonVal="'购票'"></Panel>
   </div>
 </template>
 <script>

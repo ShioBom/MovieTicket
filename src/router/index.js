@@ -9,6 +9,8 @@ import Cinemas from "../components/pages/Cinemas";
 import SelectSeats from "../components/pages/SelectSeats";
 import Cart from '../components/pages/Cart'
 import Search from '../components/pages/Search'
+import MovieManage from '../components/pages/MovieManage'
+import PrintTicket from '../components/pages/PrintTicket'
 
 //注册
 
@@ -21,6 +23,8 @@ const routes = [
   { path: "/SelectSeats", name: "SelectSeats", component: SelectSeats },
   { path: "/Cart", name: "Cart", component: Cart },
   { path: "/Search/:str", name: "Search", component: Search },
+  { path: "/MovieManage", name: "MovieManage", component: MovieManage },
+  { path: "/PrintTicket", name: "PrintTicket", component: PrintTicket },
   { path: "/", component: Home }
 ];
 const router = new VueRouter({

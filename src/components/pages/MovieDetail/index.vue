@@ -259,7 +259,7 @@ export default {
     }).then(res => {
       if (res.data.code === 1) {
         this.movie = res.data.result[0];
-        this.movie.m_picture = res.data.result[0]["m_picture"].substr(3);
+        // this.movie.m_picture = res.data.result[0]["m_picture"];
       }
     });
     this.getScore();

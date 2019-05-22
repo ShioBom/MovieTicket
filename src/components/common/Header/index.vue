@@ -15,7 +15,7 @@
     <el-dropdown>
       <span class="el-dropdown-link">
         <div class="portrait">
-          <img src="../../../assets/logo.jpg" alt="" />
+          <img :src="imgSrc" alt="" />
         </div>
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
@@ -32,6 +32,7 @@ export default {
     return {
       loginStatus: this.UrlSearch(),
       txt:"",
+      imgSrc:JSON.parse(sessionStorage.getItem("userInfo")).u_img,
     };
   },
   //获取url地址栏的参数
@@ -54,6 +55,7 @@ export default {
       return parseInt(this.u_id);
     },
     login(){
+      console.log("login");
       location.href="http://localhost:3002/admin/login";
     },
     exit(){
@@ -64,17 +66,31 @@ export default {
       this.$router.push(`/Search/${this.txt}`);
     },
     goIndex(){
-      let u_id = JSON.parse(sessionStorage.getItem("userInfo")).id;
-      if(u_id!==undefined){
+      let u_id = JSON.parse(sessionStorage.getItem("userInfo")).u_id;
+      console.log(u_id);
+      if(u_id!==null){
        location.href = `http://localhost:8080/?u_id=${u_id}`;
       }else{
        location.href = `http://localhost:8080`;
       }
+    },
+    getPortrait(){
+       let u_id = JSON.parse(sessionStorage.getItem("userInfo")).u_id;
+      this.$axios.post("http://localhost:3002/client/getPortrait",{u_id}).then(res=>{
+        console.log(res);
+        if(res.data.code===1){
+          let obj ={
+            u_id,
+            u_img:res.data.img
+          }
+          sessionStorage.setItem("userInfo",JSON.stringify(obj))
+          console.log(obj);
+        }
+      })
     }
   },
   mounted() {
-    console.log(this)
-    console.log(this.loginStatus);
+    this.getPortrait();
   },
 };
 </script>

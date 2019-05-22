@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <Banner></Banner>
-    <Panel :movies="movies" :title="'正在热映'"></Panel>
+    <Panel :movies="movies" :title="'正在热映'" :buttonVal="'购票'"></Panel>
   </div>
 </template>
 <script>

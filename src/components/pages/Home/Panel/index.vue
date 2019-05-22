@@ -8,7 +8,7 @@
         <div class="movie-item">
           <img :src="item.m_picture" alt="图片找不到了" />
           <span class="movie-name">{{ item.m_name }}</span>
-          <span>购票</span>
+          <span @click.stop="delMovie(item.m_id)">{{buttonVal}}</span>
         </div>
       </li>
     </ul>
@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-    props:["movies","title"],
+    props:["movies","title","buttonVal"],
   data() {
     return {
     
@@ -26,6 +26,21 @@ export default {
     goDetail(id){
    console.log(this.movies);
       this.$router.push("/Detail/"+id);
+    },
+    getMovies(){
+      this.$emit("getMovies");
+    },
+    delMovie(id){
+      console.log(id);
+      let data={
+        m_id:id
+      }
+      this.$axios.post("http://localhost:3002/client/delMovie",data).then(res=>{
+        if(res.data.code===1){
+          console.log(res.data.msg);
+          this.getMovies();
+        }
+      })
     },
     UrlSearch() {
       var name, value;
